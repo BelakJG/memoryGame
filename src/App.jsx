@@ -25,7 +25,7 @@ export default function App() {
     const newPokemon = [];
     for (let i = 0; i < 12; i++) {
       while (true) {
-        let randomNum = Math.floor((Math.random() * 1025) + 1);
+        let randomNum = Math.floor((Math.random() * 1024) + 1);
         if (!newPokemon.includes(randomNum)) {
           newPokemon.push(randomNum);
           break;
