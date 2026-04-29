@@ -9,6 +9,10 @@
 #game button {
     height: 250px;
     width: 250px;
-    font-size: 50px;
+    font-size: 30px;
     border-radius: 32px;
+}
+
+.pokemonImage {
+    height: 100px;
 }

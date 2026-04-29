@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getPokemon } from "./components/pokemon.js";
 
 import "./styles/app.css";
 
@@ -12,20 +13,46 @@ export default function App() {
     }
     return array;
   }
-
   function makeGuess(num) {
     if (!guesses.includes(num)) {
       setGuesses([...guesses, num]);
     } else {
       setGuesses([]);
     }
-    setMemoryValues(shuffle(memoryValues));
+    setMemoryValues(shuffle(pokemonList));
+  }
+  function newPokemon() {
+    const newPokemon = [];
+    for (let i = 0; i < 12; i++) {
+      while (true) {
+        let randomNum = Math.floor((Math.random() * 1025) + 1);
+        if (!newPokemon.includes(randomNum)) {
+          newPokemon.push(randomNum);
+          break;
+        }
+      }
+    }
+    setMemoryValues(newPokemon);
   }
 
   const [memoryValues, setMemoryValues] = useState([1,2,3,4,5,6,7,8,9,10,11,12]);
-  const memoryButtons = memoryValues.map((num) => 
-    <button type="button" key={num} onClick={() => makeGuess(num)}>
-      {num}
+  const [pokemonList, setPokemonList] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await Promise.all(
+        memoryValues.map(id => getPokemon(id))
+      );
+      setPokemonList(data);
+    }
+
+    fetchData();
+  }, [memoryValues]);
+
+  const memoryButtons = pokemonList.map((pokemon) => 
+    <button type="button" key={pokemon.id} onClick={() => makeGuess(pokemon.id)}>
+      <img src={pokemon.image} className="pokemonImage"></img>
+      <p>{pokemon.name}</p>
     </button>
   );
 
@@ -34,10 +61,16 @@ export default function App() {
   return(<>
     <header>
       <h1>Memory Game</h1>
-      <p>Correct guesses: {guesses.length}/{memoryValues.length}</p>
+      <div>
+        <p>Correct guesses: {guesses.length}/{memoryValues.length}</p>
+        <button onClick={newPokemon}>New Pokemon?</button>
+      </div>
     </header>
     <div id="game">
       {memoryButtons}
     </div>
+    <footer>
+      <p>Pokemon from <a href="https://pokeapi.co/">PokeAPI</a></p>
+    </footer>
   </>);
 }
