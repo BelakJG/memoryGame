@@ -12,9 +12,22 @@ export default function App() {
     }
     return array;
   }
-  const memoryValues = [1,2,3,4,5,6,7,8,9,10,11,12];
-  const shuffledValues = [...memoryValues];
-  const memoryButtons = shuffledValues.map((number) => <button type="button">{number}</button>);
+
+  function makeGuess(num) {
+    if (!guesses.includes(num)) {
+      setGuesses([...guesses, num]);
+    } else {
+      setGuesses([]);
+    }
+    setMemoryValues(shuffle(memoryValues));
+  }
+
+  const [memoryValues, setMemoryValues] = useState([1,2,3,4,5,6,7,8,9,10,11,12]);
+  const memoryButtons = memoryValues.map((num) => 
+    <button type="button" key={num} onClick={() => makeGuess(num)}>
+      {num}
+    </button>
+  );
 
   const [guesses, setGuesses] = useState([]);
 
